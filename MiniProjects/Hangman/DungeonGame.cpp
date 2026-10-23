@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <random>
-
 enum class Items {
     Sword,
     Knife,
@@ -11,7 +10,6 @@ enum class Items {
     Empty,
     Max
 };
-
 
 enum class Enemies {
     Skeleton,
@@ -59,7 +57,22 @@ public:
     void healPlayer();
     double getPlayerHealth() {return healthPoints;}
     void receiveDamage(double damage);
+    void printItems();
+    void setItem(Room& room, int itemSlot);
 };
+void Player::setItem(Room& room, int itemSlot) {
+    if (itemSlot == 1) {
+        itemOne = room.getItem();
+    }
+    else {
+        itemTwo = room.getItem();
+    }
+}
+std::string convertItemEnum(Items item);
+void Player::printItems() {
+    std::cout << "Current Items: " << convertItemEnum(itemOne) << ", " << convertItemEnum(itemTwo);
+}
+
 void Player::receiveDamage(double damage) {
     healthPoints = healthPoints - damage;
 }
@@ -101,7 +114,23 @@ void Player::pickUpItem(int itemSlot, Room& room) {
         return;
     }
 }
-
+std::string convertItemEnum(Items item) {
+    switch (item) {
+        case Items::Sword:
+            return "Sword";
+        case Items::Knife:
+            return "Knife";
+        case Items::HealthPotion:
+            return "Health Potion";
+        case Items::ManaPotiion:
+            return "Mana Potion";
+        case Items::Empty:
+            return "Empty";
+        case Items::Max:
+            return "Invalid Item";
+    }
+    return "Unknown Item";
+}
 
 
 Enemies setMonster() {
@@ -175,6 +204,8 @@ double enemyHealth(Room& room) {
 
     return 0;
 }
+
+
 
 std::string printItemType(Room& room) {
     switch (room.getItem()) {
@@ -291,14 +322,43 @@ void fightEnemy(Room& room, Player& player) {
             std::cout << "You have " << player.getPlayerHealth() << " health points remaning\n";
             
         }
-        std::cout << "You defeated an enemy!";       
+        std::cout << "You defeated an enemy!\n";       
     }
     else {
         std::cout << "No enemies\n";
     }
 }
-void checkRoom() {
-    
+void checkRoom(Room& room, Player player) {
+    char c {' '};
+    if (room.getItem() == Items::Empty) {
+        std::cout << "No items, moving on\n";
+        return;
+    }
+    std::cout << "There is a " << printItemType(room) << " in the room\n";
+    std::cout << "Would you like to pick it up? Y or N: ";
+    std::cin >> c;
+    if (c == 'Y') {
+        player.printItems();
+        if (player.getItemOne() != Items::Empty && player.getItemTwo() != Items::Empty) {
+            std::cout << "\nInventory Full!\n 1) drop item 1\n2) drop item 2\n3) move on\nchoice: ";
+            int choice { 0 };
+            std::cin >> choice;
+            if (choice == 1  || choice == 2) {
+                player.dropItem(choice);
+                player.pickUpItem(choice, room);
+            }
+            else {
+                std::cout << "\nMoving on\n\n";
+            }
+        }
+        else if (player.getItemTwo() == Items::Empty) {
+            player.pickUpItem(2, room);
+        }
+        else {
+            player.pickUpItem(1, room);
+        }
+    }
+    player.printItems();
 }
 
 
@@ -312,7 +372,7 @@ int main() {
     std::vector<Room> dungeonRooms;
     setStage(dungeonRooms, roomCount);
     for (auto room: dungeonRooms) {
-        std::cout << "--Room--\nItem: " << printItemType(room) << "\nEnemy: " << printMonsterType(room) << "\n";
+        std::cout << "\n--Room--\nItem: " << printItemType(room) << "\nEnemy: " << printMonsterType(room) << "\n";
         if (room.getMob() != Enemies::None) {
             fightEnemy(room, playerOne);
         }
@@ -320,7 +380,7 @@ int main() {
             std::cout << "You have been defeated!\n";
             break;
         }
-        checkRoom();
+        checkRoom(room, playerOne);
     }
 
     
