@@ -1,6 +1,7 @@
 #ifndef INVENTORYITEMS_H
 #define INVENTORYITEMS_H
 #include <unordered_map>
+#include <string>
 class Item;
 
 using Inventory = std::unordered_map<u_int16_t, Item>;
@@ -12,6 +13,9 @@ private:
 public:
     Item searchWarehouse(uint16_t itemID);
     void addItem(Item newItem, u_int16_t itemID);
+    Inventory getInventory() {
+        return currentSupply;
+    }
 };
 
 
