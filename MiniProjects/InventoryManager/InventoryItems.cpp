@@ -25,22 +25,21 @@ void Warehouse::validateRetrieval(std::optional<Item> item) {
     }
 
 }
-
-
+void Warehouse::removeItem(u_int16_t itemID) {
+    currentSupply.erase(itemID);
+}
 void Item::updatePrice(double newPrice) {
     m_price = newPrice;
 }
 void Item::updateQuantity(int newQuantity) {
     m_quantity = newQuantity;
 }
-
 void printItemInfo(Item& item) {
     std::cout << "Item: " << item.m_name;
     std::cout << " ID: " << item.m_id;
     std::cout << " Price: " << item.m_price;
     std::cout << " Quanitity: " << item.m_quantity << "\n";
 }
-
 void createItem(Warehouse* warehouse) {
     std::string itemName;
     uint16_t itemID;

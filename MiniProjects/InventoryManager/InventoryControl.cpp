@@ -4,16 +4,16 @@
 #include <sstream>
 #include <string>
 #include "InventoryItems.h"
-
+/*
+    Open file in file stream and parse line by line and fill warehouse
+*/
 void readInventoryFile(Warehouse*  warehouse) {
     std::ifstream myInventory("inventory.csv");
     std::string currentLine;
-
     std::string itemName;
     std::string id;
     std::string price;
     std::string quantity;
-
     u_int16_t itemID;
     double itemPrice;
     int itemQuantity;
@@ -56,7 +56,18 @@ void updateItemQuantity(Warehouse* warehouse) {
         updateItem.updateQuantity(newQuantity);
     }
 }
-
+void removeItem(Warehouse* warehouse) {
+    uint16_t idToRemove;
+    std::cout << "Enter ID of item to remove: ";
+    std::cin >> idToRemove;
+    std::optional<Item> itemToRemove {warehouse->searchWarehouse(idToRemove)};
+    if (itemToRemove.has_value()) {
+        warehouse->removeItem(idToRemove);
+    }
+    else {
+        std::cout << "This is not a valid ID. Try again.\n";
+    }
+}
 
 
 void printWarehouseMenu() {
@@ -83,10 +94,13 @@ void handleMenuChoice(Warehouse* warehouse,int menuChoice) {
             updateItemQuantity(warehouse);
             break;
         case 4:
+            printMyWarehouse(warehouse);
             break;
         case 5:
+            removeItem(warehouse);
             break;
         case 0:
+            std::cout << "Exiting System\n\n";
             break;
         default:
             std::cout << "Invalid choice.\n";
@@ -99,7 +113,6 @@ void saveAndQuit(Warehouse* warehouse){
         Item item {itemIndex.second};
         file << item.getItemID() << "," << item.getName() << ","  << item.getPrice() << ","  << item.getQuantity() << "\n";
     }
-    //file << "\n" << item.getItemID() << "," << item.getName() << ","  << item.getPrice() << ","  << item.getQuantity();
     file.close();
 }
 
@@ -118,15 +131,8 @@ void ManageInventory() {
         handleMenuChoice(myWarehouse, menuChoice);
     }
     saveAndQuit(myWarehouse);
-
-
     delete myWarehouse;
 }
-
-
-
-
-
 
 int main() {
     ManageInventory();

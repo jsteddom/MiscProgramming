@@ -14,11 +14,10 @@ public:
     std::optional<Item> searchWarehouse(uint16_t itemID);
     void validateRetrieval(std::optional<Item> item);
     void addItem(Item newItem, u_int16_t itemID);
+    void removeItem(u_int16_t itemID);
     Item& getItem(uint16_t itemID) { return currentSupply.at(itemID);}
     Inventory getInventory() { return currentSupply; }
 };
-
-
 
 class Item {
 private:
@@ -46,9 +45,5 @@ public:
 
 void createItem(Warehouse* warehouse);
 void saveAddedItem(Item& item);
-
-
-
-
 
 #endif
