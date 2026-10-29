@@ -11,11 +11,11 @@ private:
     Inventory currentSupply;
 
 public:
-    Item searchWarehouse(uint16_t itemID);
+    std::optional<Item> searchWarehouse(uint16_t itemID);
+    void validateRetrieval(std::optional<Item> item);
     void addItem(Item newItem, u_int16_t itemID);
-    Inventory getInventory() {
-        return currentSupply;
-    }
+    Item& getItem(uint16_t itemID) { return currentSupply.at(itemID);}
+    Inventory getInventory() { return currentSupply; }
 };
 
 
@@ -35,11 +35,17 @@ public:
     {
 
     }
+    u_int16_t getItemID() { return m_id; }
+    std::string getName() { return m_name; }
+    double getPrice() { return m_price; }
+    int getQuantity() { return m_quantity; }
     void updatePrice(double newPrice);
     void updateQuantity(int newQuantity);
     friend void printItemInfo(Item& item);
 };
 
+void createItem(Warehouse* warehouse);
+void saveAddedItem(Item& item);
 
 
 
