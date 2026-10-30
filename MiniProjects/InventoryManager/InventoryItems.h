@@ -9,7 +9,6 @@ using Inventory = std::unordered_map<u_int16_t, Item>;
 class Warehouse {
 private:
     Inventory currentSupply;
-
 public:
     std::optional<Item> searchWarehouse(uint16_t itemID);
     void validateRetrieval(std::optional<Item> item);

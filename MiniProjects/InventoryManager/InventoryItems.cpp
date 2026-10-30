@@ -23,7 +23,6 @@ void Warehouse::validateRetrieval(std::optional<Item> item) {
     if (item) {
         printItemInfo(*item);
     }
-
 }
 void Warehouse::removeItem(u_int16_t itemID) {
     currentSupply.erase(itemID);
